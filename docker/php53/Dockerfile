@@ -128,6 +128,21 @@ RUN         mkdir -p /etc/pgbouncer/ \
 ##        && mv composer.phar /usr/local/bin/ \
 ##        && ln -s /usr/local/bin/composer.phar /usr/local/bin/composer
 
+RUN         docker-php-ext-enable \
+                pdo_pgsql \
+                pdo_mysql \
+                mcrypt \
+                mbstring \
+                imap \
+                xmlrpc \
+#                memcache \
+#                redis \
+                gd \
+                calendar \
+                soap \
+                sockets \
+                xdebug
+
 ADD         entrypoint.sh /usr/local/bin/
 
 ENTRYPOINT  ["/usr/local/bin/entrypoint.sh"]
