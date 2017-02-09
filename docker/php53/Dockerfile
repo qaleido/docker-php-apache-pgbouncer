@@ -62,7 +62,7 @@ RUN         mkdir -p /etc/pgbouncer/ \
 
 # install memcached
 RUN         apt-get update \
-            && apt-get install \
+            && apt-get -y install \
                 pkg-config \
                 libmemcached-dev \
             && printf "\n" | pecl install memcached
