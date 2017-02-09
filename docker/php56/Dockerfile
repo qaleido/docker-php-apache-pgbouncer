@@ -119,13 +119,21 @@ RUN         buildDeps=" \
             && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $buildDeps
 
 # Install additional packages
-RUN         apt-get update && apt-get install -y git msmtp-mta openssh-client --no-install-recommends # && rm -r /var/lib/apt/lists/*
+RUN         apt-get update && apt-get install -y git msmtp-mta openssh-client --no-install-recommends && rm -r /var/lib/apt/lists/*
 
 # Install composer and put binary into $PATH
 RUN         curl -sS https://getcomposer.org/installer | php \
             && mv composer.phar /usr/local/bin/ \
             && ln -s /usr/local/bin/composer.phar /usr/local/bin/composer
 
+# install memcached
+RUN         apt-get update \
+            && apt-get install \
+                pkg-config \
+                libmemcached-dev \
+            && printf "\n" | pecl install memcached
+
+# enable some php modules
 RUN         docker-php-ext-enable \
                 pdo_pgsql \
                 pdo_mysql \
@@ -139,7 +147,8 @@ RUN         docker-php-ext-enable \
                 calendar \
                 soap \
                 sockets \
-                xdebug
+                xdebug \
+                memcached
 
 ADD         entrypoint.sh /usr/local/bin/
 
