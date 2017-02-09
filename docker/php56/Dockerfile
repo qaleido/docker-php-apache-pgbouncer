@@ -126,6 +126,29 @@ RUN         curl -sS https://getcomposer.org/installer | php \
             && mv composer.phar /usr/local/bin/ \
             && ln -s /usr/local/bin/composer.phar /usr/local/bin/composer
 
+# install memcached
+RUN         apt-get update \
+            && apt-get install -y \
+                pkg-config \
+                libmemcached-dev \
+            && printf "\n" | pecl install memcached
+
+# enable some php modules
+RUN         docker-php-ext-enable \
+                pdo_pgsql \
+                pdo_mysql \
+                mcrypt \
+                mbstring \
+                imap \
+                xmlrpc \
+                memcache \
+                redis \
+                gd \
+                calendar \
+                soap \
+                sockets \
+                xdebug
+
 ADD         entrypoint.sh /usr/local/bin/
 
 ENTRYPOINT  ["/usr/local/bin/entrypoint.sh"]

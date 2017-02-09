@@ -4,12 +4,6 @@ MAINTAINER  Kotaimen <kotaimen.c@gmail.com>
 
 ENV         DEBIAN_FRONTEND noninteractive
 
-#RUN         set -x \
-#            && apt-get -qq update \
-#            && apt-get install -yq --no-install-recommends pgbouncer \
-#            && apt-get purge -y --auto-remove \
-#            && rm -rf /var/lib/apt/lists/*
-
 RUN         apt-get update \
             && apt-get -y --no-install-recommends install \
                 automake \
@@ -109,7 +103,7 @@ RUN         buildDeps=" \
             && docker-php-ext-configure ldap --with-ldap-sasl \
             && docker-php-ext-install $phpModules \
             && printf "\n" | pecl install amqp \
-            && printf "\n" | pecl install memcache \
+            && printf "\n" | pecl install memcache \ # TODO fix bug with compiling for php 7
             && pecl install mongodb \
             && pecl install redis \
             && for ext in $phpModules; do \
@@ -125,6 +119,30 @@ RUN         apt-get update && apt-get install -y git msmtp-mta openssh-client --
 RUN         curl -sS https://getcomposer.org/installer | php \
             && mv composer.phar /usr/local/bin/ \
             && ln -s /usr/local/bin/composer.phar /usr/local/bin/composer
+
+# install memcached
+RUN         apt-get update \
+            && apt-get install -y \
+                pkg-config \
+                libmemcached-dev \
+            && printf "\n" | pecl install memcached
+
+# enable some php modules
+RUN         docker-php-ext-enable \
+                pdo_pgsql \
+                pdo_mysql \
+                mcrypt \
+                mbstring \
+                imap \
+                xmlrpc \
+#                memcache \
+                redis \
+                gd \
+                calendar \
+                soap \
+                sockets \
+                xdebug \
+                memcached
 
 ADD         entrypoint.sh /usr/local/bin/
 
