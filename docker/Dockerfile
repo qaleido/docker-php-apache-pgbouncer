@@ -103,7 +103,7 @@ RUN         buildDeps=" \
             && docker-php-ext-configure ldap --with-ldap-sasl \
             && docker-php-ext-install $phpModules \
             && printf "\n" | pecl install amqp \
-            && printf "\n" | pecl install memcache \
+            && printf "\n" | pecl install memcache \ # TODO fix bug with compiling for php 7
             && pecl install mongodb \
             && pecl install redis \
             && for ext in $phpModules; do \

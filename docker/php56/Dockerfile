@@ -141,14 +141,13 @@ RUN         docker-php-ext-enable \
                 mbstring \
                 imap \
                 xmlrpc \
-#                memcache \
+                memcache \
                 redis \
                 gd \
                 calendar \
                 soap \
                 sockets \
-                xdebug \
-                memcached
+                xdebug
 
 ADD         entrypoint.sh /usr/local/bin/
 
