@@ -133,6 +133,11 @@ RUN         apt-get update \
                 libmemcached-dev \
             && printf "\n" | pecl install memcached
 
+# install sdo module
+RUN         apt-get update && apt-get install -y libxml2-dev --no-install-recommends \
+            && cd /opt && git clone https://github.com/qaleido/sdo.git && cd sdo && phpize && ./configure && make \
+            && make install && rm -r /var/lib/apt/lists/*
+
 # enable some php modules
 RUN         docker-php-ext-enable \
                 pdo_pgsql \
@@ -146,6 +151,7 @@ RUN         docker-php-ext-enable \
                 gd \
                 calendar \
                 soap \
+                sockets \
                 sockets \
                 xdebug
 
