@@ -61,11 +61,27 @@ RUN         mkdir -p /etc/pgbouncer/ \
             && chown postgres:postgres /var/run/postgresql/
 
 # install memcached
+#RUN         apt-get update \
+#            && apt-get install -y \
+#                pkg-config \
+#                zlib1g-dev \
+#                libmemcached-dev \
+#            && printf "\n" | pecl install memcached
+
+
+ENV         MEMCACHED_VERSION 2.2.0
+
+# install memcached
 RUN         apt-get update \
-            && apt-get install -y \
-                pkg-config \
-                libmemcached-dev \
-            && printf "\n" | pecl install memcached
+            && apt-get install -y curl ca-certificates pkg-config zlib1g-dev libmemcached-dev \
+            && cd /opt \
+            && curl -O https://pecl.php.net/get/memcached-$MEMCACHED_VERSION.tgz \
+            && tar zvxf memcached-$MEMCACHED_VERSION.tgz \
+            && cd memcached-$MEMCACHED_VERSION \
+            && phpize \
+            && ./configure --disable-memcached-sasl \
+            && make && printf "n\n" | make test && make install
+
 
 # enable some php modules
 RUN         docker-php-ext-enable \

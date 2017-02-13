@@ -103,7 +103,7 @@ RUN         buildDeps=" \
             && docker-php-ext-configure ldap --with-ldap-sasl \
             && docker-php-ext-install $phpModules \
             && printf "\n" | pecl install amqp \
-            && printf "\n" | pecl install memcache \ # TODO fix bug with compiling for php 7
+#            && printf "\n" | pecl install memcache \ # Doesn't compile for PHP 7 (yet)
             && pecl install mongodb \
             && pecl install redis \
             && for ext in $phpModules; do \
@@ -124,6 +124,7 @@ RUN         curl -sS https://getcomposer.org/installer | php \
 RUN         apt-get update \
             && apt-get install -y \
                 pkg-config \
+                zlib1g-dev \
                 libmemcached-dev \
             && printf "\n" | pecl install memcached
 
@@ -135,7 +136,7 @@ RUN         docker-php-ext-enable \
                 mbstring \
                 imap \
                 xmlrpc \
-#                memcache \
+#                memcache \  # Doesn't compile for PHP 7 (yet)
                 redis \
                 gd \
                 calendar \
